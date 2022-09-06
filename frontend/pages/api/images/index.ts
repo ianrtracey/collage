@@ -1,5 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { NextApiRequest, NextApiResponse } from 'next'
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = 'https://dunmkplqjsgkibzsgelx.supabase.co'
+const supabaseKey =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1bm1rcGxxanNna2lienNnZWx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjIyNjU3MTQsImV4cCI6MTk3Nzg0MTcxNH0.uDqafCQGu-SG6lyIU3tG1ITvfKhvyzUhVvSZ80-hcOg'
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 type Data = {
   name: string
@@ -34,10 +40,19 @@ export default async function handler (
           }
         })
       })
-      const data = await response.json()
-      console.log({ data })
+      const replicateData = await response.json()
+      console.log({ replicateData })
+      const { data, error } = await supabase.from('artwork').insert([
+        {
+          image_id: replicateData.id
+        }
+      ])
+      console.log({
+        data,
+        error
+      })
       if (response.ok) {
-        res.status(201).json({ id: data.id })
+        res.status(201).json({ id: replicateData.id })
       } else {
         res.status(500).json({ message: 'API is down' })
       }

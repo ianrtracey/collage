@@ -1,9 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { NextApiRequest, NextApiResponse } from 'next'
+import { createClient } from '@supabase/supabase-js'
 
 type Data = {
   name: string
 }
+
+const supabaseUrl = 'https://dunmkplqjsgkibzsgelx.supabase.co'
+const supabaseKey =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR1bm1rcGxxanNna2lienNnZWx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjIyNjU3MTQsImV4cCI6MTk3Nzg0MTcxNH0.uDqafCQGu-SG6lyIU3tG1ITvfKhvyzUhVvSZ80-hcOg'
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 const TOKEN = '3cd703c5e2bead4de03bec0ac1a8c02f35d26cea'
 const API_URL = 'https://api.replicate.com/v1/predictions'
@@ -17,6 +23,18 @@ export default async function handler (
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  if (req.method === 'PUT') {
+    const { imageId } = req.query
+
+    const payload = JSON.parse(req.body)
+    console.log({ imageId, imageUrl: payload.imageUrl })
+    const { data, error } = await supabase
+      .from('artwork')
+      .update({ image_url: payload.imageUrl })
+      .eq('image_id', imageId)
+    res.status(204)
+    return
+  }
   if (req.method === 'GET') {
     // handle kicking off creating a new image
     const { imageId } = req.query
@@ -27,7 +45,6 @@ export default async function handler (
         headers: HEADERS
       })
       const data = await response.json()
-      console.log({ data })
       if (response.ok) {
         res.status(201).json({
           id: data.id,

@@ -2,7 +2,7 @@ import { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import { Input, Spacer, Loading } from '@geist-ui/core'
+import { Input, Spacer, Loading, Textarea } from '@geist-ui/core'
 import GeneratedImage from '../components/GeneratedImage'
 import { useState } from 'react'
 
@@ -45,7 +45,7 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <div>
-          <Input
+          <Textarea
             onChange={e => {
               setPageState({
                 ...pageState,

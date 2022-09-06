@@ -29,6 +29,13 @@ const GeneratedImage = ({ imageId }) => {
     console.log('cancelling interval')
     clearInterval(intervalId)
     setIntervalId(null)
+    fetch('/api/images/' + imageId, {
+      method: 'PUT',
+      headers: { Accept: 'application/json' },
+      body: JSON.stringify({
+        imageUrl: imageUrl
+      })
+    })
   }
   return imageUrl ? (
     <Image src={imageUrl} alt='generated image' width={WIDTH} height={HEIGHT} />
