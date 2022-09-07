@@ -39,6 +39,8 @@ export default async function handler (
     // handle kicking off creating a new image
     const { imageId } = req.query
     if (!imageId) {
+      res.status(400).json({ error: 'imageId is required' })
+      return
     } else {
       const response = await fetch(API_URL + `/${imageId}`, {
         method: 'GET',

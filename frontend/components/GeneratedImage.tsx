@@ -1,8 +1,8 @@
 import Fragment, { useEffect, useState } from 'react'
 import Image from 'next/image'
 
-const HEIGHT = 512
-const WIDTH = 512
+const HEIGHT = 250
+const WIDTH = 300
 
 const GeneratedImage = ({ imageId }) => {
   const [imageUrl, setImageUrl] = useState(null)

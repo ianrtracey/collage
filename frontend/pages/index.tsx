@@ -2,9 +2,10 @@ import { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import { Input, Spacer, Loading, Textarea } from '@geist-ui/core'
+import { Button, Card, Input, Spacer, Loading, Textarea } from '@geist-ui/core'
 import GeneratedImage from '../components/GeneratedImage'
 import { useState } from 'react'
+import { Settings } from '@geist-ui/icons'
 
 type PageState = {
   prompt: string | null
@@ -35,6 +36,13 @@ const Home: NextPage = () => {
       imageId: data.id
     })
   }
+  const clearState = () => {
+    setPageState({
+      prompt: null,
+      imageId: null,
+      status: 'idle'
+    } as PageState)
+  }
   return (
     <div className={styles.container}>
       <Head>
@@ -45,27 +53,74 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <div>
-          <Textarea
-            onChange={e => {
-              setPageState({
-                ...pageState,
-                prompt: e.target.value
-              })
-            }}
-            onKeyDown={e => {
-              if (e.key === 'Enter') {
-                setPageState({
-                  ...pageState,
-                  imageId: null
-                })
-                submitPrompt()
-              }
-            }}
-            placeholder='my awesome idea'
-          />{' '}
+          <Card shadow>
+            <div
+              style={{
+                display: 'flex',
+                minHeight: '300px',
+                width: '300px',
+                flexDirection: 'column',
+                justifyContent: 'space-between'
+              }}
+            >
+              {/* <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <p>hoverable card</p>
+              <Settings size={16} />
+            </div> */}
+              <div>
+                {pageState.imageId ? (
+                  <div
+                    style={{
+                      width: '300px',
+                      height: '250px'
+                    }}
+                  >
+                    <GeneratedImage imageId={pageState.imageId} />
+                  </div>
+                ) : (
+                  <Textarea
+                    style={{
+                      width: '300px',
+                      height: '250px'
+                    }}
+                    onChange={e => {
+                      setPageState({
+                        ...pageState,
+                        prompt: e.target.value
+                      })
+                    }}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        setPageState({
+                          ...pageState,
+                          imageId: null
+                        })
+                        submitPrompt()
+                      }
+                    }}
+                    placeholder='my awesome idea...'
+                  />
+                )}
+              </div>
+              {pageState.imageId ? (
+                <Button onClick={clearState} auto scale={0.5} type='secondary'>
+                  New
+                </Button>
+              ) : (
+                <Button auto scale={0.5} type='secondary'>
+                  ✨ Create
+                </Button>
+              )}
+            </div>
+          </Card>
           <Spacer h={0.5} />
         </div>
-        {pageState.imageId && <GeneratedImage imageId={pageState.imageId} />}
       </main>
     </div>
   )
